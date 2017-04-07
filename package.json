@@ -1,0 +1,15 @@
+{
+  "name": "metlink-data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Marcus Crane <marcus@thingsima.de>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.16.0",
+    "rethinkdbdash": "^2.3.28"
+  }
+}
