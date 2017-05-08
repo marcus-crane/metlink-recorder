@@ -7,17 +7,17 @@ fetchService = (stationCode) => {
   .catch((err) => { console.error('error fetching station data', err) })
 }
 
-insertData = (nextTrain) => {
+insertData = (service) => {
   r.table('services')
   .insert({
     'id': r.uuid(),
-    'trainID': nextTrain.VehicleRef,
-    'origin': nextTrain.OriginStopID,
-    'destination': nextTrain.DestinationStopID,
-    'intendedArrival': nextTrain.AimedArrival,
-    'intendedDeparture': nextTrain.AimedDeparture,
-    'expectedDeparture': nextTrain.ExpectedDeparture,
-    'status': nextTrain.DepartureStatus,
+    'trainID': service.VehicleRef,
+    'origin': service.OriginStopID,
+    'destination': service.DestinationStopID,
+    'intendedArrival': service.AimedArrival,
+    'intendedDeparture': service.AimedDeparture,
+    'expectedDeparture': service.ExpectedDeparture,
+    'status': service.DepartureStatus,
     'createdAt': r.now()
   })
   .catch((err) => {
@@ -25,4 +25,12 @@ insertData = (nextTrain) => {
   })
 }
 
-module.exports = { fetchService, insertData }
+insertOperatingServices = (APIresponse) => {
+  for (service of APIresponse.Services) {
+    if (service.VehicleRef) {
+      insertData(service)
+    }
+  }
+}
+
+module.exports = { fetchService, insertOperatingServices }
