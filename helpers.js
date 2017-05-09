@@ -1,10 +1,15 @@
 const r = require('rethinkdbdash')({ db: 'metlink' })
+const moment = require('moment')
 const axios = require('axios')
+
+currentTime = () => {
+  return moment().format("dddd, MMMM Do YYYY, h:mm:ss a")
+}
 
 fetchData = (stationCode) => {
   return axios.get(`https://www.metlink.org.nz/api/v1/StopDepartures/${stationCode}`)
   .then((res) => { return res.data })
-  .catch((err) => { console.error('error fetching station data', err) })
+  .catch((err) => { console.error(`error fetching station data at ${currentTime()}`, err) })
 }
 
 queryTrip = (intendedDeparture) => {
@@ -41,7 +46,7 @@ updateData = (service, id) => {
     'modified': r.now()
   })
   .then((res) => {
-    console.log('updated', res)
+    console.log(`updated ${service.VehicleRef} at ${currentTime()}`)
   })
   .catch((err) => {
     console.log('error updating', err)
@@ -65,7 +70,7 @@ insertData = (service) => {
     'createdAt': r.now()
   })
   .then((res) => {
-    console.log('inserted', res)
+    console.log(`inserted ${service.VehicleRef} at ${currentTime()}`)
   })
   .catch((err) => {
     console.error('error inserting', err)
@@ -86,18 +91,19 @@ queryService = (stationCode) => {
     insertOperatingServices(APIresponse)
   })
   .catch((err) => {
-    console.error('failed to fetch latest service', err)
+    console.error(`failed to fetch latest service at ${currentTime()}`, err)
   })
 }
 
 drainPool = () => {
+  console.log(`draining at ${currentTime()}`)
   r.getPoolMaster().drain()
 }
 
 getNAENupdate = () => {
   queryService('NAEN')
   .catch((err) => {
-    console.log('failed to update NAEN data')
+    console.log(`failed to update NAEN data at ${currentTime()}`)
   })
 
   setTimeout(drainPool, 3000)
