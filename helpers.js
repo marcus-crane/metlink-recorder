@@ -18,6 +18,9 @@ insertData = (service) => {
     'intendedDeparture': service.AimedDeparture,
     'expectedDeparture': service.ExpectedDeparture,
     'status': service.DepartureStatus,
+    'type': service.Service.Mode,
+    'code': service.Service.Code,
+    'name': service.Service.Name,
     'createdAt': r.now()
   })
   .catch((err) => {
